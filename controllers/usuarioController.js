@@ -1,11 +1,18 @@
 const Usuario = require('../models/Usuario');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 
 const anadirUsuario = async (req,res) => {
     try{
         const usuario =  req.body;
         console.log(usuario);
+
+        const salt =  await bcrypt.genSalt(10);
+        const hash =  await bcrypt.hash(usuario.contrasena,salt);
+
+        usuario.contrasena = hash;
+
         const nuevoUsuario = new Usuario(usuario);
         await nuevoUsuario.save();
         res.status(201).json(nuevoUsuario)

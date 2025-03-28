@@ -7,8 +7,11 @@ conectarDB.conectarDB();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
-app.use(cookieParser());
+app.use(cors({
+    origin: "http://localhost:3000", // o el puerto desde donde pruebas
+    credentials: true
+}));
+// app.use(cookieParser());
 
 app.use('/Devops',require('./routes/routes'));
 

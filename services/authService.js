@@ -5,13 +5,18 @@ const Usuario = require('../models/Usuario');
 
 
 const generarAccessToken = (user)=> {
-    return jwt.sign(user,process.env.JWT_ACCESS_SECRET,{expiresIn:process.env.ACCESS_EXPIRES});
+    //Aqui como usamos mongoose debemos de convertir a objeto
+    const payload = {...user.toObject()};
+    return jwt.sign(payload,process.env.JWT_ACCESS_SECRET,{expiresIn:process.env.ACCESS_EXPIRES});
 };
 
 
 const generarRefreshToken = async(user) => {
-    const refreshToken =  jwt.sign(user,process.env.JWT_REFRESH_SECRET,{expiresIn:process.env.REFRESH_EXPIRES});
-    await Usuario.findByIdAndUpdate(user._id,{$push:{refreshToken:refreshToken}});
+    //Aqui como usamos mongoose debemos de convertir a objeto
+    const payload = {...user.toObject()};
+    
+    const refreshToken =  jwt.sign(payload,process.env.JWT_REFRESH_SECRET,{expiresIn:process.env.REFRESH_EXPIRES});
+    await Usuario.findByIdAndUpdate(user._id,{$push:{refreshTokens:refreshToken}});
     return refreshToken;
 };
 
